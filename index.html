@@ -9,206 +9,95 @@
   <style>
     * { font-family: system-ui, -apple-system, sans-serif; }
     
-    .title-main {
-      font-size: 4rem;
-      font-weight: 900;
-      background: linear-gradient(45deg, #ff0000 0%, #ff3366 25%, #ff6666 50%, #ff3366 75%, #ff0000 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
-      position: relative;
-      display: inline-block;
+    .login-btn:active {
+      transform: scale(0.98);
     }
     
-    .title-main::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, transparent 0%, #ff0000 20%, #ff6666 50%, #ff0000 80%, transparent 100%);
-      animation: shine 3s infinite;
-    }
-    
-    @keyframes shine {
-      0% { opacity: 0.3; }
-      50% { opacity: 1; }
-      100% { opacity: 0.3; }
-    }
-    
-    .login-card {
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 0, 0, 0.2);
-      box-shadow: 0 0 50px rgba(255, 0, 0, 0.1), 0 0 100px rgba(255, 0, 0, 0.05);
-    }
-    
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .success-flash {
-      animation: successFlash 0.5s ease-in-out;
-    }
-    
-    @keyframes successFlash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+    .error-message {
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 5px;
+      text-align: center;
+      display: none;
     }
   </style>
 </head>
-<body class="bg-black text-white min-h-screen">
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-4">
   <!-- 登录页 -->
-  <div id="loginPage" class="fixed inset-0 flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-12">
-        <h1 class="title-main">全智宇是瘤子</h1>
-        <p class="text-white/30 mt-4 text-sm tracking-widest">[PRIVATE COMMUNITY]</p>
+  <div id="loginPage" class="w-full max-w-sm">
+    <h1 class="text-3xl font-bold text-center mb-8 text-red-500">全智宇是瘤子</h1>
+    
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-4 text-center">登录</h2>
+      
+      <div class="mb-4">
+        <input 
+          type="text" 
+          id="stuId" 
+          placeholder="输入学号 23009001xx"
+          autocomplete="off"
+          class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+          maxlength="10"
+        >
+        <div id="errorMsg" class="error-message"></div>
       </div>
       
-      <div class="login-card rounded-2xl p-8">
-        <div class="text-center mb-8">
-          <div class="w-16 h-16 mx-auto mb-4 relative">
-            <div class="w-full h-full rounded-full bg-gradient-to-br from-red-600 to-rose-600 flex items-center justify-center">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-              </svg>
-            </div>
-            <div class="absolute -inset-2 bg-red-500/20 rounded-full blur-lg -z-10"></div>
-          </div>
-          <h2 class="text-xl font-semibold mb-2">社区登录</h2>
-          <p class="text-white/40 text-sm">学号范围: 2300900101-2300900199</p>
-        </div>
-        
-        <div class="space-y-6">
-          <div>
-            <input 
-              type="text" 
-              id="stuId" 
-              placeholder="输入学号"
-              autocomplete="off"
-              autocapitalize="off"
-              autocorrect="off"
-              spellcheck="false"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center
-                     outline-none transition-all duration-200
-                     focus:bg-white/10 focus:border-red-500/50
-                     placeholder:text-white/20"
-              maxlength="10"
-              value="2300900101"  <!-- 默认填充一个测试学号 -->
-            >
-          </div>
-          
-          <div class="space-y-3">
-            <button 
-              onclick="handleLogin()"
-              id="loginBtn"
-              class="w-full bg-gradient-to-r from-red-600 to-rose-600 
-                     text-white font-semibold py-3 rounded-xl transition-all duration-200
-                     hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:shadow-red-500/20
-                     active:scale-[0.98]
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     flex items-center justify-center gap-2"
-            >
-              <span id="btnText">进入社区</span>
-            </button>
-            
-            <div class="grid grid-cols-5 gap-2">
-              <button onclick="quickLogin('2300900101')" class="text-xs bg-white/5 hover:bg-white/10 py-1 rounded transition">01</button>
-              <button onclick="quickLogin('2300900102')" class="text-xs bg-white/5 hover:bg-white/10 py-1 rounded transition">02</button>
-              <button onclick="quickLogin('2300900103')" class="text-xs bg-white/5 hover:bg-white/10 py-1 rounded transition">03</button>
-              <button onclick="quickLogin('2300900104')" class="text-xs bg-white/5 hover:bg-white/10 py-1 rounded transition">04</button>
-              <button onclick="quickLogin('2300900105')" class="text-xs bg-white/5 hover:bg-white/10 py-1 rounded transition">05</button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="mt-6 pt-6 border-t border-white/10 text-center">
-          <p class="text-xs text-white/40">当前在线: <span id="onlineCount" class="text-red-400">0</span> 人</p>
-        </div>
+      <button 
+        onclick="handleLogin()"
+        id="loginBtn"
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-lg transition login-btn disabled:opacity-50"
+      >
+        进入
+      </button>
+      
+      <div class="mt-4 text-center text-sm text-gray-500">
+        <p>可用学号: 2300900101-2300900199</p>
+        <p>输入其他内容会被清空</p>
       </div>
     </div>
   </div>
 
   <!-- 主应用 -->
-  <div id="app" class="hidden min-h-screen">
-    <header class="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-white/10">
-      <div class="max-w-6xl mx-auto px-4 py-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-rose-600 flex items-center justify-center">
-              <span class="font-black text-sm">全</span>
+  <div id="app" class="hidden w-full max-w-2xl p-4">
+    <header class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+          <span class="font-bold text-sm">全</span>
+        </div>
+        <h1 class="text-xl font-bold text-red-400">全智宇是瘤子</h1>
+      </div>
+      <button onclick="logout()" class="text-sm text-gray-400 hover:text-white">退出</button>
+    </header>
+
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4">
+      <div class="flex gap-3">
+        <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-medium text-sm" id="userAvatar"></div>
+        <div class="flex-1">
+          <h3 id="welcomeTitle" class="font-medium text-sm mb-1">欢迎</h3>
+          <textarea 
+            id="postContent"
+            placeholder="分享你的想法..."
+            class="w-full bg-transparent outline-none resize-none text-sm min-h-[60px]"
+            maxlength="280"
+          ></textarea>
+          <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-800">
+            <div class="text-xs text-gray-500">
+              <span id="charCount">0</span>/280
             </div>
-            <h1 class="text-xl font-black bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
-              全智宇是瘤子
-            </h1>
-          </div>
-          
-          <div class="flex items-center gap-3">
-            <div class="text-right">
-              <p class="text-sm font-medium" id="currentStuId"></p>
-              <p class="text-xs text-white/40">欢迎</p>
-            </div>
-            <button onclick="logout()" 
-                    class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-              </svg>
+            <button 
+              onclick="publishPost()"
+              id="publishBtn"
+              class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-3 py-1.5 rounded disabled:opacity-50"
+              disabled
+            >
+              发布
             </button>
           </div>
         </div>
       </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto px-4 py-6">
-      <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 mb-6 success-flash">
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-rose-600 flex items-center justify-center font-semibold text-sm" id="userAvatar"></div>
-          <div class="flex-1">
-            <div class="mb-2">
-              <h2 class="font-semibold" id="welcomeTitle">登录成功！</h2>
-              <p class="text-xs text-white/60" id="welcomeSubtitle">可以开始发帖了</p>
-            </div>
-            <textarea 
-              id="postContent"
-              placeholder="有什么新鲜事？"
-              class="w-full bg-transparent outline-none resize-none text-sm placeholder:text-white/30 min-h-[80px]"
-              maxlength="280"
-            ></textarea>
-            <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-              <div class="text-xs text-white/40">
-                <span id="charCount">0</span>/280
-              </div>
-              <button 
-                onclick="publishPost()"
-                id="publishBtn"
-                class="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 
-                       text-white text-sm font-semibold px-4 py-2 rounded-lg transition
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled
-              >
-                发布
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div id="postsContainer" class="space-y-4">
-        <!-- 动态加载 -->
-      </div>
-    </main>
+    </div>
+    
+    <div id="postsContainer" class="space-y-3"></div>
   </div>
 
 <script>
@@ -216,155 +105,147 @@
 const SUPABASE_URL = 'https://hovporynwsdxzexedasm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvdnBvcnlud3NkeHpleGVkYXNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODQ1NjksImV4cCI6MjA5MTY2MDU2OX0.5bFSIQdTsyIUJi68rnFRoJGS6ApNuTIqdoO1Vm6rJwg';
 
-// 初始化 Supabase
+// 全局变量
 let supabase = null;
 let currentUser = null;
 
-// 调试模式开关
-let debugMode = true;
-
 // ========== 工具函数 ==========
-function log(message, type = 'info') {
-  if (debugMode) {
-    const colors = {
-      info: 'color: #4ade80',
-      error: 'color: #f87171',
-      warn: 'color: #fbbf24',
-      debug: 'color: #60a5fa'
-    };
-    console.log(`%c[全智宇] ${message}`, colors[type] || colors.info);
-  }
+function showError(message) {
+  const errorEl = document.getElementById('errorMsg');
+  errorEl.textContent = message;
+  errorEl.style.display = 'block';
+  setTimeout(() => {
+    errorEl.style.display = 'none';
+  }, 3000);
 }
 
 // ========== 核心登录函数 ==========
 async function handleLogin() {
   const stuId = document.getElementById('stuId').value.trim();
   const btn = document.getElementById('loginBtn');
-  const btnText = document.getElementById('btnText');
   
-  log(`开始登录，输入: ${stuId}`);
+  console.log('登录尝试:', stuId);
   
-  // 1. 验证学号格式 (2300900101-2300900199)
-  const isValidLength = stuId.length === 10;
-  const isValidStart = stuId.startsWith('23009001');
-  const lastTwo = stuId.slice(-2);
-  const isValidRange = lastTwo >= '01' && lastTwo <= '99';  // 改为 99
-  const isNumeric = /^\d+$/.test(stuId);
-  
-  if (!isValidLength || !isValidStart || !isValidRange || !isNumeric) {
-    log('格式验证失败，清空输入框');
+  // 1. 验证学号格式
+  if (stuId.length !== 10) {
+    console.log('长度验证失败');
     document.getElementById('stuId').value = '';
     return;
   }
   
-  // 2. 初始化 Supabase
-  try {
-    if (!supabase) {
-      log('初始化 Supabase 连接...');
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      
-      // 测试连接
-      const { error: testError } = await supabase.from('users').select('count').limit(1);
-      if (testError && testError.code !== 'PGRST116') {
-        throw new Error(`Supabase 连接失败: ${testError.message}`);
-      }
-      log('Supabase 连接成功');
-    }
-  } catch (error) {
-    log(`Supabase 初始化失败: ${error.message}`, 'error');
-    alert('数据库连接失败，请检查网络');
+  if (!stuId.startsWith('23009001')) {
+    console.log('开头验证失败');
+    document.getElementById('stuId').value = '';
     return;
   }
   
-  // 3. 显示加载状态
+  const lastTwo = stuId.slice(-2);
+  if (lastTwo < '01' || lastTwo > '99') {
+    console.log('范围验证失败:', lastTwo);
+    document.getElementById('stuId').value = '';
+    return;
+  }
+  
+  if (!/^\d+$/.test(stuId)) {
+    console.log('数字验证失败');
+    document.getElementById('stuId').value = '';
+    return;
+  }
+  
+  console.log('学号验证通过');
+  
+  // 2. 显示加载状态
   btn.disabled = true;
-  btnText.innerHTML = '<div class="loading-spinner"></div>';
+  btn.textContent = '验证中...';
   
   try {
+    // 3. 初始化 Supabase
+    if (!supabase) {
+      console.log('初始化 Supabase 连接');
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
+      // 简单连接测试
+      const { error: testError } = await supabase.from('users').select('stu_id').limit(1);
+      if (testError && testError.code !== 'PGRST116') {
+        console.error('Supabase 连接失败:', testError);
+        showError('数据库连接失败，请刷新重试');
+        return;
+      }
+      console.log('Supabase 连接成功');
+    }
+    
     // 4. 检查用户是否存在
-    log(`查询用户: ${stuId}`);
+    console.log('查询用户:', stuId);
     const { data: existingUser, error: checkError } = await supabase
       .from('users')
       .select('*')
       .eq('stu_id', stuId)
       .single();
     
-    if (checkError && checkError.code !== 'PGRST116') {
-      throw new Error(`查询用户失败: ${checkError.message}`);
-    }
-    
     let userData = existingUser;
     
-    // 5. 用户不存在则创建
+    // 用户不存在则创建
     if (!userData) {
-      log('用户不存在，创建新用户');
+      console.log('创建新用户');
       const { data: newUser, error: createError } = await supabase
         .from('users')
         .insert([{
           stu_id: stuId,
           nick: `用户${lastTwo}`,
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${stuId}`,
           created_at: new Date().toISOString()
         }])
         .select()
         .single();
       
       if (createError) {
-        throw new Error(`创建用户失败: ${createError.message}`);
+        console.error('创建用户失败:', createError);
+        showError('用户创建失败');
+        return;
       }
       userData = newUser;
-      log('新用户创建成功');
+      console.log('新用户创建成功');
     } else {
-      log('用户已存在，直接登录');
+      console.log('用户已存在');
     }
     
-    // 6. 保存用户信息
+    // 5. 保存用户信息
     currentUser = userData;
     localStorage.setItem('current_user', JSON.stringify(userData));
     
-    // 7. 更新 UI
-    document.getElementById('currentStuId').textContent = userData.stu_id;
-    document.getElementById('userAvatar').textContent = userData.stu_id.slice(-2);
-    document.getElementById('welcomeTitle').textContent = `欢迎，${userData.nick}`;
-    document.getElementById('welcomeSubtitle').textContent = `学号: ${userData.stu_id}`;
+    // 6. 更新界面
+    document.getElementById('userAvatar').textContent = stuId.slice(-2);
+    document.getElementById('welcomeTitle').textContent = `欢迎，用户${lastTwo}`;
     
-    // 8. 切换页面
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
+    // 7. 切换页面
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
     
-    log('登录成功，切换到主界面');
+    console.log('登录成功，切换到主界面');
     
-    // 9. 加载帖子
+    // 8. 加载帖子
     await loadPosts();
     
   } catch (error) {
-    log(`登录过程出错: ${error.message}`, 'error');
-    alert(`登录失败: ${error.message}`);
-    document.getElementById('stuId').value = '';
+    console.error('登录过程出错:', error);
+    showError('登录失败，请检查网络');
   } finally {
-    // 10. 恢复按钮状态
+    // 恢复按钮状态
     btn.disabled = false;
-    btnText.textContent = '进入社区';
+    btn.textContent = '进入';
   }
 }
 
-// ========== 辅助功能 ==========
-function quickLogin(stuId) {
-  document.getElementById('stuId').value = stuId;
-  handleLogin();
-}
-
-// ========== 主应用功能 ==========
+// ========== 帖子功能 ==========
 async function loadPosts() {
   const container = document.getElementById('postsContainer');
-  container.innerHTML = '<div class="text-center py-8"><div class="loading-spinner mx-auto mb-2"></div><p class="text-white/40 text-sm">加载中...</p></div>';
+  container.innerHTML = '<div class="text-center py-4 text-gray-500">加载中...</div>';
   
   try {
     const { data: posts, error } = await supabase
       .from('posts')
       .select(`
         *,
-        author:users(stu_id, nick, avatar)
+        author:users(stu_id, nick)
       `)
       .order('created_at', { ascending: false })
       .limit(20);
@@ -374,8 +255,8 @@ async function loadPosts() {
     renderPosts(posts || []);
     
   } catch (error) {
-    log(`加载帖子失败: ${error.message}`, 'error');
-    container.innerHTML = '<div class="text-center py-8 text-red-400">加载失败</div>';
+    console.error('加载帖子失败:', error);
+    container.innerHTML = '<div class="text-center py-4 text-red-500">加载失败</div>';
   }
 }
 
@@ -383,32 +264,27 @@ function renderPosts(posts) {
   const container = document.getElementById('postsContainer');
   
   if (posts.length === 0) {
-    container.innerHTML = '<div class="text-center py-8 text-white/40 text-sm">还没有动态，发布第一条吧！</div>';
+    container.innerHTML = '<div class="text-center py-8 text-gray-500">还没有帖子</div>';
     return;
   }
   
   container.innerHTML = posts.map(post => `
-    <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
-      <div class="flex gap-3">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-rose-600 flex items-center justify-center text-xs font-semibold">
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-3">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="w-6 h-6 bg-red-600 rounded-full text-xs flex items-center justify-center">
           ${post.author?.stu_id?.slice(-2) || '??'}
         </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="font-semibold text-sm">${post.author?.nick || '用户'}</span>
-            <span class="text-xs px-1.5 py-0.5 bg-red-500/20 text-red-300 rounded">${post.author?.stu_id}</span>
-            <span class="text-white/30 text-xs ml-auto">${formatTime(post.created_at)}</span>
-          </div>
-          <div class="text-white/90 text-sm mb-3 whitespace-pre-wrap">${escapeHtml(post.content)}</div>
-          <div class="flex items-center gap-4 text-xs text-white/40">
-            <button onclick="likePost('${post.id}')" class="flex items-center gap-1 hover:text-red-400 transition">
-              ❤️ <span>${post.likes?.length || 0}</span>
-            </button>
-            ${post.author?.stu_id === currentUser?.stu_id ? `
-              <button onclick="deletePost('${post.id}')" class="hover:text-red-500 transition">删除</button>
-            ` : ''}
-          </div>
-        </div>
+        <span class="font-medium text-sm">${post.author?.nick || '用户'}</span>
+        <span class="text-xs text-gray-500 ml-auto">${formatTime(post.created_at)}</span>
+      </div>
+      <div class="text-sm mb-2">${escapeHtml(post.content)}</div>
+      <div class="flex gap-4 text-xs text-gray-500">
+        <button onclick="likePost('${post.id}')" class="hover:text-red-400">
+          ❤️ ${post.likes?.length || 0}
+        </button>
+        ${post.author?.stu_id === currentUser?.stu_id ? `
+          <button onclick="deletePost('${post.id}')" class="hover:text-red-400">删除</button>
+        ` : ''}
       </div>
     </div>
   `).join('');
@@ -439,7 +315,7 @@ async function publishPost() {
     await loadPosts();
     
   } catch (error) {
-    log(`发布失败: ${error.message}`, 'error');
+    console.error('发布失败:', error);
     alert('发布失败');
   } finally {
     btn.disabled = false;
@@ -457,7 +333,7 @@ async function likePost(postId) {
     if (error) throw error;
     await loadPosts();
   } catch (error) {
-    log(`点赞失败: ${error.message}`, 'error');
+    console.error('点赞失败:', error);
   }
 }
 
@@ -473,7 +349,7 @@ async function deletePost(postId) {
     if (error) throw error;
     await loadPosts();
   } catch (error) {
-    log(`删除失败: ${error.message}`, 'error');
+    console.error('删除失败:', error);
   }
 }
 
@@ -533,23 +409,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const stuId = user.stu_id;
       
       // 验证学号格式
-      const isValidLength = stuId.length === 10;
-      const isValidStart = stuId.startsWith('23009001');
-      const lastTwo = stuId.slice(-2);
-      const isValidRange = lastTwo >= '01' && lastTwo <= '99';
-      const isNumeric = /^\d+$/.test(stuId);
-      
-      if (isValidLength && isValidStart && isValidRange && isNumeric) {
-        currentUser = user;
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('currentStuId').textContent = user.stu_id;
-        document.getElementById('userAvatar').textContent = user.stu_id.slice(-2);
-        document.getElementById('welcomeTitle').textContent = `欢迎回来，${user.nick}`;
-        document.getElementById('welcomeSubtitle').textContent = `学号: ${user.stu_id}`;
+      if (stuId.length === 10 && 
+          stuId.startsWith('23009001') &&
+          stuId.slice(-2) >= '01' && 
+          stuId.slice(-2) <= '99' &&
+          /^\d+$/.test(stuId)) {
         
-        // 初始化 Supabase
+        currentUser = user;
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('userAvatar').textContent = stuId.slice(-2);
+        document.getElementById('welcomeTitle').textContent = `欢迎回来，用户${stuId.slice(-2)}`;
+        
         loadPosts();
       }
     } catch (e) {
@@ -557,7 +430,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  log('页面加载完成');
+  // 在控制台显示版本信息
+  console.log('基础修复版已加载');
+  console.log('Supabase 配置:', SUPABASE_URL);
 });
 </script>
 </body>
