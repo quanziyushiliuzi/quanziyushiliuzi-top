@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>全智宇是瘤子</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Microsoft YaHei}
+    body{background:#f5f5f5;padding:20px}
+    .bar{max-width:1000px;margin:0 auto 20px;display:flex;justify-content:space-between;background:#fff;padding:12px 20px;border-radius:10px}
+    .banner{max-width:1000px;margin:0 auto 30px;background:linear-gradient(135deg,#2c3e50,#34495e);text-align:center;padding:50px 20px;border-radius:12px}
+    .banner h1{font-size:50px;background:linear-gradient(90deg,#ff6b6b,#feca57,#1dd1a1,#54a0ff);-webkit-background-clip:text;color:transparent;-webkit-text-stroke:1px #000}
+    .box{max-width:1000px;margin:0 auto;background:#fff;padding:30px;border-radius:12px}
+    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center}
+    .show{display:flex}
+    .modal-in{background:#fff;padding:30px;border-radius:12px;width:90%;max-width:400px}
+    input,textarea{width:100%;padding:10px;margin:10px 0;border:1px solid #ddd;border-radius:8px}
+    button{padding:8px 16px;background:#3498db;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-right:5px}
+    .red{background:#e74c3c}
+    .comment{background:#fafafa;padding:15px;border-radius:10px;margin:12px 0}
+    .name{font-weight:bold;color:#3498db}
+    .time{font-size:12px;color:#999;margin-left:10px}
+    .content{margin:10px 0}
+    .btn-bar{display:flex;gap:15px;font-size:14px}
+    .btn-bar button{background:none;color:#666;padding:0}
+    .like.active{color:#e74c3c}
+    .reply-box{margin-left:30px;display:none}
+    .reply-box.show{display:block}
+    .reply-list{margin-left:30px}
+  </style>
+</head>
+<body>
+
+<div class="bar">
+  <h3>全智宇是瘤子</h3>
+  <div>
+    <button id="loginBtn" onclick="showLogin()">登录</button>
+    <button id="nickBtn" style="display:none" onclick="showNick()">修改昵称</button>
+    <button id="logoutBtn" style="display:none" onclick="logout()">注销</button>
+  </div>
+</div>
+
+<div class="banner">
+  <h1>全智宇是瘤子</h1>
+</div>
+
+<div class="box">
+  <textarea id="content" rows="4" placeholder="输入评论"></textarea>
+  <button class="red" onclick="send()">发布评论</button>
+  <hr style="margin:20px 0">
+  <div id="list"></div>
+</div>
+
+<div class="modal" id="loginModal">
+  <div class="modal-in">
+    <h3>学号</h3>
+    <input id="stu">
+    <button onclick="doLogin()">登录</button>
+  </div>
+</div>
+
+<div class="modal" id="nickModal">
+  <div class="modal-in">
+    <h3>昵称</h3>
+    <input id="name">
+    <button onclick="setNick()">确认</button>
+  </div>
+</div>
+
+<script>
+let uid = localStorage.getItem('uid');
+let name = localStorage.getItem('name');
+let list = JSON.parse(localStorage.getItem('list')) || [];
+
+refresh();
+showList();
+
+function refresh() {
+  document.getElementById('loginBtn').style.display = uid ? 'none' : 'inline-block';
+  document.getElementById('nickBtn').style.display = uid ? 'inline-block' : 'none';
+  document.getElementById('logoutBtn').style.display = uid ? 'inline-block' : 'none';
+}
+
+function showLogin() { document.getElementById('loginModal').classList.add('show'); }
+function showNick() { document.getElementById('nickModal').classList.add('show'); }
+
+function doLogin() {
+  let v = document.getElementById('stu').value.trim();
+  if (!/^23009001\d{2}$/.test(v)) return;
+  uid = v;
+  localStorage.setItem('uid', v);
+  document.getElementById('loginModal').classList.remove('show');
+  refresh();
+  if (!name) setTimeout(showNick, 300);
+}
+
+function setNick() {
+  let v = document.getElementById('name').value.trim();
+  if (!v) return;
+  name = v;
+  localStorage.setItem('name', v);
+  document.getElementById('nickModal').classList.remove('show');
+}
+
+function logout() {
+  uid = null; name = null;
+  localStorage.clear();
+  refresh();
+  showList();
+}
+
+function send() {
+  if (!uid) return showLogin();
+  if (!name) return showNick();
+  let t = document.getElementById('content').value.trim();
+  if (!t) return;
+  list.unshift({
+    id: Date.now(), name, text: t, time: new Date().toLocaleString(),
+    like: [], child: []
+  });
+  document.getElementById('content').value = '';
+  save();
+}
+
+function like(id) {
+  if (!uid) return;
+  function d(ls) {
+    ls.forEach(i => {
+      if (i.id == id) {
+        let idx = i.like.indexOf(uid);
+        idx > -1 ? i.like.splice(idx, 1) : i.like.push(uid);
+      }
+      d(i.child);
+    });
+  }
+  d(list);
+  save();
+}
+
+function openReply(id) {
+  let el = document.getElementById('reply_' + id);
+  el.classList.toggle('show');
+}
+
+function doReply(id) {
+  if (!uid) return;
+  let t = document.getElementById('reply_text_' + id).value.trim();
+  if (!t) return;
+  function d(ls) {
+    ls.forEach(i => {
+      if (i.id == id) i.child.push({ id: Date.now(), name, text: t, time: new Date().toLocaleString(), like: [], child: [] });
+      d(i.child);
+    });
+  }
+  d(list);
+  document.getElementById('reply_text_' + id).value = '';
+  save();
+}
+
+function showList() {
+  function build(ls) {
+    let h = '';
+    ls.forEach(i => {
+      let isLike = i.like.includes(uid) ? 'active' : '';
+      h += `
+        <div class="comment">
+          <div><span class="name">${i.name}</span><span class="time">${i.time}</span></div>
+          <div class="content">${i.text}</div>
+          <div class="btn-bar">
+            <button class="like ${isLike}" onclick="like(${i.id})">👍 ${i.like.length}</button>
+            <button onclick="openReply(${i.id})">回复</button>
+          </div>
+          <div class="reply-box" id="reply_${i.id}">
+            <textarea id="reply_text_${i.id}"></textarea>
+            <button onclick="doReply(${i.id})">发送</button>
+          </div>
+          <div class="reply-list">${build(i.child)}</div>
+        </div>
+      `;
+    });
+    return h;
+  }
+  document.getElementById('list').innerHTML = build(list);
+}
+
+function save() {
+  localStorage.setItem('list', JSON.stringify(list));
+  showList();
+}
+</script>
+</body>
+</html>
