@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QuanSpace</title>
   <style>
-    /* 基础重置 */
     * {
       margin: 0;
       padding: 0;
@@ -21,11 +20,9 @@
       --surface-hover: #1d1f23;
       --text-primary: #ffffff;
       --text-secondary: #71767b;
-      --text-tertiary: #71767b;
       --border: #2f3336;
       --like-color: #f91880;
       --retweet-color: #00ba7c;
-      --reply-color: var(--primary);
     }
     
     body {
@@ -165,6 +162,12 @@
       z-index: 10;
     }
     
+    .header-title {
+      padding: 12px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
     /* 发布框 */
     .post-composer {
       padding: 16px;
@@ -205,6 +208,10 @@
       min-height: 60px;
     }
     
+    .composer-textarea::placeholder {
+      color: var(--text-secondary);
+    }
+    
     .composer-actions {
       display: flex;
       justify-content: space-between;
@@ -226,12 +233,30 @@
       transition: background-color 0.2s;
     }
     
+    .post-button-sm:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .post-button-sm:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
     /* 帖子列表 */
+    .posts-container {
+      min-height: 100vh;
+    }
+    
+    /* 单个帖子 */
     .post {
       padding: 16px;
       border-bottom: 1px solid var(--border);
       transition: background-color 0.2s;
       cursor: pointer;
+    }
+    
+    .post:hover {
+      background-color: var(--surface-hover);
     }
     
     .post-header {
@@ -252,6 +277,10 @@
       color: white;
       font-size: 18px;
       margin-right: 12px;
+    }
+    
+    .post-user-info {
+      flex: 1;
     }
     
     .post-user-name {
@@ -295,6 +324,16 @@
       border-radius: 9999px;
       cursor: pointer;
       transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .action-button:hover {
+      background-color: rgba(29, 155, 240, 0.1);
+      color: var(--primary);
+    }
+    
+    .action-button.like:hover {
+      background-color: rgba(249, 24, 128, 0.1);
+      color: var(--like-color);
     }
     
     /* 管理员按钮样式 */
@@ -341,6 +380,35 @@
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .close-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .close-button:hover {
+      background-color: var(--surface-hover);
     }
     
     /* 响应式设计 */
@@ -524,7 +592,6 @@
   
   <script>
     // 🔧 配置部分 ============================================
-    // 请替换为你的 Supabase 项目信息
     const SUPABASE_URL = 'https://hovporynwsdxzexedasm.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvdnBvcnlud3NkeHpleGVkYXNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODQ1NjksImV4cCI6MjA5MTY2MDU2OX0.5bFSIQdTsyIUJi68rnFRoJGS6ApNuTIqdoO1Vm6rJwg';
     
@@ -543,6 +610,7 @@
     let posts = [];
     let isAdmin = false;
     const ADMIN_PASSWORD = '200918';
+    let realtimeChannel = null;
     
     // 📱 工具函数 ============================================
     function generateId() {
@@ -706,8 +774,6 @@
         textarea.value = '';
         document.getElementById('charCountDisplay').textContent = '0/280';
         document.getElementById('postButton').disabled = true;
-        
-        // 帖子会通过实时订阅自动更新
       } catch (error) {
         console.error('发布失败:', error);
         alert('发布失败: ' + error.message);
@@ -732,8 +798,6 @@
           .eq('id', postId);
         
         if (error) throw error;
-        
-        // 帖子会通过实时订阅自动更新
       } catch (error) {
         console.error('删除失败:', error);
         alert('删除失败: ' + error.message);
@@ -795,23 +859,86 @@
     
     // 🔄 实时订阅 ============================================
     function setupRealtime() {
-      const channel = supabase
+      // 如果已有频道，先取消订阅
+      if (realtimeChannel) {
+        supabase.removeChannel(realtimeChannel);
+      }
+      
+      // 创建新的实时订阅
+      realtimeChannel = supabase
         .channel('posts_changes')
         .on(
           'postgres_changes',
           {
-            event: '*',
+            event: '*', // 监听所有事件
             schema: 'public',
             table: 'posts'
           },
           (payload) => {
             console.log('收到实时更新:', payload);
-            loadPosts(); // 重新加载所有帖子
+            // 当有数据变化时，重新加载帖子
+            loadPosts();
           }
         )
-        .subscribe();
+        .subscribe((status) => {
+          console.log('实时订阅状态:', status);
+        });
+    }
+    
+    // 点赞功能
+    async function likePost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
       
-      return channel;
+      const liked = !post.liked;
+      const likes = liked ? (post.likes || 0) + 1 : Math.max(0, (post.likes || 0) - 1);
+      
+      try {
+        const { error } = await supabase
+          .from('posts')
+          .update({ 
+            liked: liked,
+            likes: likes
+          })
+          .eq('id', postId);
+        
+        if (error) throw error;
+        
+        // 本地更新
+        post.liked = liked;
+        post.likes = likes;
+        renderPosts();
+      } catch (error) {
+        console.error('点赞失败:', error);
+      }
+    }
+    
+    // 转发功能
+    async function retweetPost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      const retweeted = !post.retweeted;
+      const retweets = retweeted ? (post.retweets || 0) + 1 : Math.max(0, (post.retweets || 0) - 1);
+      
+      try {
+        const { error } = await supabase
+          .from('posts')
+          .update({ 
+            retweeted: retweeted,
+            retweets: retweets
+          })
+          .eq('id', postId);
+        
+        if (error) throw error;
+        
+        // 本地更新
+        post.retweeted = retweeted;
+        post.retweets = retweets;
+        renderPosts();
+      } catch (error) {
+        console.error('转发失败:', error);
+      }
     }
     
     // 📝 辅助函数 ============================================
@@ -859,6 +986,8 @@
     
     // 🎯 初始化 ============================================
     document.addEventListener('DOMContentLoaded', async function() {
+      console.log('QuanSpace 正在初始化...');
+      
       // 检查管理员状态
       checkAdminStatus();
       
@@ -866,11 +995,11 @@
       await loadUser();
       updateAvatarChars();
       
-      // 加载帖子
-      await loadPosts();
-      
       // 设置实时订阅
       setupRealtime();
+      
+      // 加载初始帖子
+      await loadPosts();
       
       // 点击外部关闭模态框
       window.onclick = function(event) {
@@ -880,7 +1009,7 @@
         }
       };
       
-      console.log('QuanSpace 已加载');
+      console.log('QuanSpace 已加载完成');
     });
   </script>
 </body>
