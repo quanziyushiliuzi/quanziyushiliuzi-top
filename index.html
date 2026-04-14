@@ -3,116 +3,352 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuanSpace</title>
+  <title>QuanSpace - 实时社交平台</title>
   <style>
-    /* 所有CSS样式保持不变，只修复JS */
-    /* 为节省空间，这里省略CSS，实际文件中请保留所有CSS代码 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #1d9bf0;
+      --primary-hover: #1a8cd8;
+      --background: #000000;
+      --surface: #16181c;
+      --surface-light: #1d1f23;
+      --text-primary: #ffffff;
+      --text-secondary: #71767b;
+      --border: #2f3336;
+      --like-color: #f91880;
+      --retweet-color: #00ba7c;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+    }
+    
+    .app-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: var(--primary-hover);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    
+    .post-composer {
+      margin-bottom: 20px;
+    }
+    
+    .post {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), #7856ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .username {
+      font-weight: 600;
+    }
+    
+    .user-handle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .post-time {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    
+    .post-content {
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    
+    .post-actions {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+    
+    .action-btn:hover {
+      color: var(--primary);
+    }
+    
+    .action-btn.like:hover {
+      color: var(--like-color);
+    }
+    
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #f00;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .admin-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    
+    .status {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+    }
   </style>
 </head>
 <body>
-  <!-- 页面结构保持不变 -->
-  <!-- 省略HTML结构，实际文件中请保留所有HTML -->
+  <div class="app-container">
+    <header>
+      <div class="logo">QuanSpace</div>
+      <div class="subtitle">实时社交平台 - 学号 2300900101-2300900199</div>
+    </header>
+    
+    <div id="userSetup" class="section">
+      <div class="section-title">设置你的身份</div>
+      <input type="text" id="nicknameInput" placeholder="输入昵称（2-20个字符）" maxlength="20">
+      <button onclick="saveUser()">开始使用</button>
+    </div>
+    
+    <div id="mainContent" style="display: none;">
+      <div class="section post-composer">
+        <div class="section-title">分享你的想法</div>
+        <textarea 
+          id="postContent" 
+          placeholder="有什么新鲜事？" 
+          rows="3" 
+          maxlength="280"
+          oninput="updateCharCount()"
+        ></textarea>
+        <div class="char-count">
+          <span id="charCount">0</span>/280
+        </div>
+        <button onclick="createPost()" id="postBtn" disabled>发布</button>
+      </div>
+      
+      <div id="postsContainer">
+        <div class="status">加载中...</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="admin-fab" onclick="toggleAdminMode()" title="管理员模式">🔧</div>
 
-  <!-- 引入Supabase的正确方式 -->
+  <!-- 引入 Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <script>
-    // 🔧 修复1：正确初始化Supabase
+    // ========== 配置 ==========
     const SUPABASE_URL = 'https://hovporynwsdxzexedasm.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvdnBvcnlud3NkeHpleGVkYXNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwODQ1NjksImV4cCI6MjA5MTY2MDU2OX0.5bFSIQdTsyIUJi68rnFRoJGS6ApNuTIqdoO1Vm6rJwg';
     
-    // 全局错误处理
-    window.onerror = function(msg, url, lineNo, columnNo, error) {
-      console.error('全局错误:', msg, error);
-      return false;
-    };
-    
-    // 确保supabase对象可用
-    if (typeof supabase === 'undefined') {
-      console.error('Supabase库未加载，检查网络连接');
-    }
-    
-    // 初始化Supabase客户端
-    let supabaseClient = null;
-    try {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      console.log('Supabase客户端初始化成功');
-    } catch (error) {
-      console.error('Supabase初始化失败:', error);
-      alert('数据库连接失败，请刷新页面');
-    }
-    
     // 全局变量
-    let currentUser = {
-      id: null,
-      nickname: '新用户',
-      handle: 'user',
-      bio: '',
-      avatarChar: '👤'
-    };
-    
-    let posts = [];
+    let supabase = null;
+    let currentUser = null;
     let isAdmin = false;
     const ADMIN_PASSWORD = '200918';
     
-    // 📱 工具函数
+    // ========== 工具函数 ==========
     function generateId() {
       return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
     
     function formatTime(dateString) {
-      try {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diff = now - date;
-        
-        const minutes = Math.floor(diff / 60000);
-        if (minutes < 1) return '刚刚';
-        if (minutes < 60) return `${minutes}分钟前`;
-        
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours}小时前`;
-        
-        const days = Math.floor(hours / 24);
-        if (days < 7) return `${days}天前`;
-        
-        return date.toLocaleDateString('zh-CN');
-      } catch (e) {
-        return '未知时间';
-      }
+      const date = new Date(dateString);
+      const now = new Date();
+      const diff = now - date;
+      
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 1) return '刚刚';
+      if (minutes < 60) return `${minutes}分钟前`;
+      
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}小时前`;
+      
+      const days = Math.floor(hours / 24);
+      if (days < 7) return `${days}天前`;
+      
+      return date.toLocaleDateString('zh-CN');
     }
     
-    // 👤 用户管理
-    function loadUser() {
-      try {
-        const savedUser = localStorage.getItem('q_user');
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-          currentUser = { ...currentUser, ...user };
-        } else {
-          currentUser.id = generateId();
-          currentUser.handle = 'user_' + currentUser.id.slice(-6);
-          saveUser();
-        }
-        updateUserUI();
-      } catch (error) {
-        console.error('加载用户失败:', error);
-      }
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/\n/g, '<br>');
     }
     
+    // ========== 用户管理 ==========
     function saveUser() {
-      localStorage.setItem('q_user', JSON.stringify(currentUser));
-    }
-    
-    // 📄 帖子管理
-    async function loadPosts() {
-      if (!supabaseClient) {
-        console.error('Supabase客户端未初始化');
+      const nicknameInput = document.getElementById('nicknameInput');
+      const nickname = nicknameInput.value.trim();
+      
+      if (nickname.length < 2 || nickname.length > 20) {
+        alert('昵称需要2-20个字符');
         return;
       }
       
+      currentUser = {
+        id: generateId(),
+        nickname: nickname,
+        handle: nickname.toLowerCase().replace(/\s+/g, '_'),
+        avatarChar: nickname.charAt(0).toUpperCase() || '👤'
+      };
+      
+      localStorage.setItem('qs_user', JSON.stringify(currentUser));
+      
+      document.getElementById('userSetup').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      
+      loadPosts();
+    }
+    
+    // ========== 帖子管理 ==========
+    async function loadPosts() {
+      const container = document.getElementById('postsContainer');
+      container.innerHTML = '<div class="status">加载中...</div>';
+      
       try {
-        const { data, error } = await supabaseClient
+        if (!supabase) {
+          container.innerHTML = '<div class="status">数据库连接失败，请刷新页面</div>';
+          return;
+        }
+        
+        const { data, error } = await supabase
           .from('posts')
           .select('*')
           .order('created_at', { ascending: false })
@@ -120,21 +356,68 @@
         
         if (error) throw error;
         
-        posts = data || [];
-        renderPosts();
+        renderPosts(data || []);
       } catch (error) {
         console.error('加载帖子失败:', error);
+        container.innerHTML = '<div class="status">加载失败，请刷新重试</div>';
       }
     }
     
+    function renderPosts(posts) {
+      const container = document.getElementById('postsContainer');
+      
+      if (!posts || posts.length === 0) {
+        container.innerHTML = '<div class="status">还没有帖子，发布第一条吧！</div>';
+        return;
+      }
+      
+      let html = '';
+      
+      posts.forEach(post => {
+        const time = formatTime(post.created_at);
+        const canDelete = isAdmin || (currentUser && post.user_id === currentUser.id);
+        
+        html += `
+          <div class="post" id="post-${post.id}">
+            <div class="post-header">
+              <div class="avatar">${post.avatar_char || '👤'}</div>
+              <div class="user-info">
+                <div class="username">${escapeHtml(post.nickname)}</div>
+                <div class="user-handle">@${escapeHtml(post.handle)}</div>
+              </div>
+              <div class="post-time">${time}</div>
+            </div>
+            <div class="post-content">${escapeHtml(post.content)}</div>
+            <div class="post-actions">
+              <button class="action-btn like" onclick="likePost('${post.id}')">
+                ${post.liked ? '❤️' : '🤍'} ${post.likes || 0}
+              </button>
+              <button class="action-btn" onclick="replyToPost('${post.id}')">
+                💬 ${post.replies || 0}
+              </button>
+              ${canDelete ? 
+                `<button class="delete-btn" onclick="deletePost('${post.id}')">删除</button>` 
+                : ''
+              }
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+    
     async function createPost() {
-      const textarea = document.getElementById('composerTextarea');
+      const textarea = document.getElementById('postContent');
       const content = textarea.value.trim();
       
-      if (!content || content.length > 280) return;
+      if (!content || content.length > 280) {
+        alert('请输入内容（1-280字）');
+        return;
+      }
       
-      if (!supabaseClient) {
-        alert('数据库连接失败');
+      if (!currentUser) {
+        alert('请先设置昵称');
         return;
       }
       
@@ -154,12 +437,16 @@
       };
       
       try {
-        const { error } = await supabaseClient.from('posts').insert([newPost]);
+        const { error } = await supabase
+          .from('posts')
+          .insert([newPost]);
+        
         if (error) throw error;
         
         textarea.value = '';
-        document.getElementById('charCountDisplay').textContent = '0/280';
-        document.getElementById('postButton').disabled = true;
+        document.getElementById('charCount').textContent = '0';
+        document.getElementById('postBtn').disabled = true;
+        
       } catch (error) {
         console.error('发布失败:', error);
         alert('发布失败: ' + error.message);
@@ -169,115 +456,134 @@
     async function deletePost(postId) {
       if (!confirm('确定要删除这条帖子吗？')) return;
       
-      if (!supabaseClient) {
-        alert('数据库连接失败');
-        return;
-      }
-      
       try {
-        const { error } = await supabaseClient
+        const { error } = await supabase
           .from('posts')
           .delete()
           .eq('id', postId);
         
         if (error) throw error;
+        
       } catch (error) {
         console.error('删除失败:', error);
         alert('删除失败: ' + error.message);
       }
     }
     
-    // 🔧 管理员系统
-    function checkAdminStatus() {
-      isAdmin = localStorage.getItem('q_admin') === 'true';
+    async function likePost(postId) {
+      try {
+        const { data: post, error: fetchError } = await supabase
+          .from('posts')
+          .select('likes, liked')
+          .eq('id', postId)
+          .single();
+        
+        if (fetchError) throw fetchError;
+        
+        const liked = !post.liked;
+        const likes = liked ? (post.likes || 0) + 1 : Math.max(0, (post.likes || 0) - 1);
+        
+        const { error: updateError } = await supabase
+          .from('posts')
+          .update({ liked, likes })
+          .eq('id', postId);
+        
+        if (updateError) throw updateError;
+        
+      } catch (error) {
+        console.error('点赞失败:', error);
+      }
     }
     
+    function replyToPost(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (post) {
+        document.getElementById('postContent').value = `@${post.handle} `;
+        document.getElementById('postContent').focus();
+        updateCharCount();
+      }
+    }
+    
+    // ========== 管理员功能 ==========
     function toggleAdminMode() {
       if (isAdmin) {
         isAdmin = false;
-        localStorage.removeItem('q_admin');
+        localStorage.removeItem('qs_admin');
         alert('已退出管理员模式');
       } else {
         const password = prompt('请输入管理员密码:');
         if (password === ADMIN_PASSWORD) {
           isAdmin = true;
-          localStorage.setItem('q_admin', 'true');
-          alert('管理员模式已开启！您可以删除任何帖子。');
+          localStorage.setItem('qs_admin', 'true');
+          alert('管理员模式已开启！');
         } else {
           alert('密码错误');
         }
       }
-      renderPosts();
+      loadPosts();
     }
     
-    // 🔄 实时订阅
+    // ========== 实时订阅 ==========
     function setupRealtime() {
-      if (!supabaseClient) {
-        console.error('Supabase客户端未初始化，无法订阅');
-        return;
-      }
+      if (!supabase) return;
       
-      try {
-        const channel = supabaseClient
-          .channel('posts_changes')
-          .on('postgres_changes', 
-            { event: '*', schema: 'public', table: 'posts' }, 
-            (payload) => {
-              console.log('收到实时更新');
-              loadPosts();
-            }
-          )
-          .subscribe();
-        
-        return channel;
-      } catch (error) {
-        console.error('实时订阅失败:', error);
-      }
+      const channel = supabase
+        .channel('posts-channel')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'posts' }, 
+          () => {
+            loadPosts();
+          }
+        )
+        .subscribe();
+      
+      return channel;
     }
     
-    // 🎮 交互功能
+    // ========== 界面交互 ==========
     function updateCharCount() {
-      const textarea = document.getElementById('composerTextarea');
+      const textarea = document.getElementById('postContent');
       const length = textarea.value.length;
-      document.getElementById('charCountDisplay').textContent = `${length}/280`;
-      document.getElementById('postButton').disabled = length === 0 || length > 280;
+      document.getElementById('charCount').textContent = length;
+      document.getElementById('postBtn').disabled = length === 0 || length > 280;
     }
     
-    // 🎯 修复：直接绑定事件监听器
-    function setupEventListeners() {
-      // 绑定字符计数
-      const textarea = document.getElementById('composerTextarea');
-      if (textarea) {
-        textarea.addEventListener('input', updateCharCount);
-      }
-      
-      // 绑定回车登录
-      document.getElementById('stuId')?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleLogin();
-        }
-      });
-    }
-    
-    // 页面加载初始化
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('页面加载完成');
-      
-      // 加载用户
-      loadUser();
+    // ========== 初始化 ==========
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('页面初始化...');
       
       // 检查管理员状态
-      checkAdminStatus();
+      isAdmin = localStorage.getItem('qs_admin') === 'true';
       
-      // 设置事件监听器
-      setupEventListeners();
+      // 检查用户登录状态
+      const savedUser = localStorage.getItem('qs_user');
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+          document.getElementById('userSetup').style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+        } catch (e) {
+          console.error('加载用户失败:', e);
+        }
+      }
+      
+      // 初始化Supabase
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('Supabase初始化成功');
+      } catch (error) {
+        console.error('Supabase初始化失败:', error);
+        alert('数据库连接失败，请刷新页面');
+        return;
+      }
       
       // 设置实时订阅
       setupRealtime();
       
       // 加载帖子
-      loadPosts();
+      if (currentUser) {
+        await loadPosts();
+      }
       
       console.log('初始化完成');
     });
