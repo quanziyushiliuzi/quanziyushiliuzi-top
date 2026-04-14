@@ -3,482 +3,1190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>全智宇是瘤子</title>
+  <title>QuanSpace</title>
   <style>
+    /* 基础重置 */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     
+    :root {
+      --primary: #1d9bf0;
+      --primary-hover: #1a8cd8;
+      --background: #000000;
+      --surface: #000000;
+      --surface-light: #16181c;
+      --surface-hover: #1d1f23;
+      --text-primary: #ffffff;
+      --text-secondary: #71767b;
+      --text-tertiary: #71767b;
+      --border: #2f3336;
+      --like-color: #f91880;
+      --retweet-color: #00ba7c;
+      --reply-color: var(--primary);
+    }
+    
     body {
-      background: #000;
-      color: #fff;
-      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--background);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
       min-height: 100vh;
     }
     
-    .container {
-      max-width: 600px;
+    /* 主容器布局 */
+    .app-container {
+      display: flex;
+      max-width: 1265px;
       margin: 0 auto;
-      padding: 20px;
+      min-height: 100vh;
     }
     
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #ff0000;
+    /* 左侧边栏 */
+    .sidebar {
+      width: 275px;
+      padding: 0 12px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     
-    .title {
-      font-size: 3rem;
-      font-weight: 900;
-      background: linear-gradient(45deg, #ff0000, #ff6666, #ff0000);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
-    }
-    
-    .subtitle {
-      color: #888;
-      font-size: 0.9rem;
-    }
-    
-    .user-section {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .user-section h2 {
-      color: #ff0000;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-    }
-    
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 15px;
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 5px;
-      color: white;
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-    
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #ff0000;
-    }
-    
-    .button {
-      background: #ff0000;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.2s;
-    }
-    
-    .button:hover {
-      background: #cc0000;
-    }
-    
-    .button:disabled {
-      background: #666;
-      cursor: not-allowed;
-    }
-    
-    .post-section {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .post-header {
+    .logo {
       display: flex;
       align-items: center;
-      margin-bottom: 15px;
+      height: 56px;
+      padding-left: 12px;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--primary);
+      text-decoration: none;
     }
     
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(45deg, #ff0000, #ff6666);
-      border-radius: 50%;
+    .logo:hover {
+      background-color: var(--surface-hover);
+      border-radius: 9999px;
+    }
+    
+    .nav-list {
+      list-style: none;
+      flex: 1;
+    }
+    
+    .nav-item {
+      margin: 4px 0;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      border-radius: 9999px;
+      transition: background-color 0.2s;
+    }
+    
+    .nav-link:hover {
+      background-color: var(--surface-hover);
+    }
+    
+    .nav-icon {
+      width: 26px;
+      height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      margin-right: 10px;
+    }
+    
+    .nav-text {
+      font-size: 20px;
+      font-weight: 400;
+    }
+    
+    .post-button {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 16px 0;
+      font-size: 17px;
+      font-weight: 600;
+      margin: 16px 0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .post-button:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 9999px;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    
+    .user-profile:hover {
+      background-color: var(--surface-hover);
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), #7856ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
     }
     
     .user-info {
       flex: 1;
     }
     
-    .current-user {
+    .user-name {
       font-weight: 600;
-      color: #fff;
     }
     
-    .current-user-id {
-      color: #888;
-      font-size: 0.8rem;
+    .user-handle {
+      color: var(--text-secondary);
+      font-size: 14px;
     }
     
-    textarea {
-      width: 100%;
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 5px;
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      max-width: 600px;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    
+    /* 顶部导航 */
+    .main-header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      z-index: 10;
+    }
+    
+    .header-title {
+      padding: 12px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    /* 发布框 */
+    .post-composer {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .composer-container {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .composer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), #7856ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
       color: white;
-      font-size: 1rem;
-      padding: 15px;
-      resize: vertical;
-      min-height: 120px;
-      margin-bottom: 10px;
+      font-size: 18px;
     }
     
-    textarea:focus {
+    .composer-content {
+      flex: 1;
+    }
+    
+    .composer-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      resize: none;
       outline: none;
-      border-color: #ff0000;
+      font-family: inherit;
+      min-height: 60px;
     }
     
-    .post-footer {
+    .composer-textarea::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .composer-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #888;
-      font-size: 0.9rem;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 12px;
     }
     
+    .action-icons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .action-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .action-icon:hover {
+      background-color: rgba(29, 155, 240, 0.1);
+    }
+    
+    .post-button-sm {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .post-button-sm:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .post-button-sm:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* 帖子列表 */
     .posts-container {
-      margin-top: 20px;
+      min-height: 100vh;
     }
     
+    /* 单个帖子 */
     .post {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 15px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+    
+    .post:hover {
+      background-color: var(--surface-hover);
     }
     
     .post-header {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     
     .post-avatar {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(45deg, #ff0000, #ff6666);
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), #7856ff);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-right: 10px;
+      font-weight: 600;
+      color: white;
+      font-size: 18px;
+      margin-right: 12px;
     }
     
     .post-user-info {
       flex: 1;
     }
     
-    .post-username {
+    .post-user-name {
       font-weight: 600;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     
-    .post-userid {
-      color: #888;
-      font-size: 0.8rem;
+    .post-user-handle {
+      color: var(--text-secondary);
+      font-size: 15px;
     }
     
     .post-time {
-      color: #666;
-      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-size: 15px;
     }
     
     .post-content {
+      font-size: 15px;
       line-height: 1.5;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     
     .post-actions {
       display: flex;
-      gap: 15px;
+      justify-content: space-between;
+      max-width: 425px;
+      margin-left: 60px;
     }
     
-    .post-action {
-      background: none;
-      border: none;
-      color: #888;
-      cursor: pointer;
-      font-size: 0.9rem;
+    .action-button {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 8px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      padding: 8px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
     }
     
-    .post-action:hover {
-      color: #ff0000;
+    .action-button:hover {
+      background-color: rgba(29, 155, 240, 0.1);
+      color: var(--primary);
     }
     
-    .empty-state {
-      text-align: center;
-      color: #666;
-      padding: 40px 20px;
+    .action-button.like:hover {
+      background-color: rgba(249, 24, 128, 0.1);
+      color: var(--like-color);
     }
     
-    .error {
-      color: #ff4444;
-      font-size: 0.9rem;
-      margin-top: 5px;
+    .action-button.retweet:hover {
+      background-color: rgba(0, 186, 124, 0.1);
+      color: var(--retweet-color);
+    }
+    
+    .action-icon-small {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* 右侧边栏 */
+    .right-sidebar {
+      width: 350px;
+      padding: 0 12px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    
+    .search-container {
+      padding: 12px 0;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      background-color: var(--surface-light);
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 20px 12px 45px;
+      color: var(--text-primary);
+      font-size: 15px;
+      outline: none;
+    }
+    
+    .search-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    
+    /* 趋势模块 */
+    .trends {
+      background-color: var(--surface-light);
+      border-radius: 16px;
+      margin: 16px 0;
+      overflow: hidden;
+    }
+    
+    .trends-header {
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .trend-item {
+      padding: 12px 16px;
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+    
+    .trend-item:hover {
+      background-color: var(--surface-hover);
+    }
+    
+    .trend-category {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .trend-name {
+      font-weight: 600;
+      margin: 2px 0;
+    }
+    
+    .trend-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    /* 谁关注模块 */
+    .who-to-follow {
+      background-color: var(--surface-light);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .who-to-follow-header {
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .follow-item {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+    
+    .follow-item:hover {
+      background-color: var(--surface-hover);
+    }
+    
+    .follow-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), #7856ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+      font-size: 16px;
+    }
+    
+    .follow-info {
+      flex: 1;
+    }
+    
+    .follow-name {
+      font-weight: 600;
+    }
+    
+    .follow-handle {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    
+    .follow-button {
+      background-color: var(--text-primary);
+      color: var(--background);
+      border: none;
+      border-radius: 9999px;
+      padding: 6px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .follow-button:hover {
+      opacity: 0.9;
+    }
+    
+    /* 模态框 */
+    .modal {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(91, 112, 131, 0.4);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background-color: var(--background);
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .close-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .close-button:hover {
+      background-color: var(--surface-hover);
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 1264px) {
+      .right-sidebar {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 1015px) {
+      .sidebar {
+        width: 88px;
+      }
+      .nav-text, .user-info, .post-button span {
+        display: none;
+      }
+      .nav-link {
+        justify-content: center;
+        width: 50px;
+        padding: 12px;
+      }
+      .post-button {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .user-profile {
+        justify-content: center;
+      }
+    }
+    
+    /* 活跃状态 */
+    .active {
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- 标题 -->
-    <div class="header">
-      <h1 class="title">全智宇是瘤子</h1>
-      <p class="subtitle">自由社区 - 无需登录，直接参与</p>
-    </div>
-    
-    <!-- 用户设置区 -->
-    <div class="user-section">
-      <h2>设置你的昵称</h2>
-      <input type="text" id="nicknameInput" placeholder="输入你的昵称（2-20个字符）" maxlength="20">
-      <div id="nicknameError" class="error"></div>
-      <button class="button" onclick="saveNickname()" id="saveNicknameBtn">保存昵称</button>
-    </div>
-    
-    <!-- 发布区 -->
-    <div class="post-section" id="postSection" style="display: none;">
-      <div class="post-header">
-        <div class="user-avatar" id="avatarDisplay">??</div>
+  <div class="app-container">
+    <!-- 左侧边栏 -->
+    <div class="sidebar">
+      <a href="#" class="logo">Q</a>
+      
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <div class="nav-icon">🏠</div>
+            <span class="nav-text">首页</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#explore" class="nav-link">
+            <div class="nav-icon">🔍</div>
+            <span class="nav-text">探索</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#notifications" class="nav-link">
+            <div class="nav-icon">🔔</div>
+            <span class="nav-text">通知</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#messages" class="nav-link">
+            <div class="nav-icon">✉️</div>
+            <span class="nav-text">私信</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#profile" class="nav-link" id="profileLink">
+            <div class="nav-icon">👤</div>
+            <span class="nav-text">个人资料</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#more" class="nav-link">
+            <div class="nav-icon">⋯</div>
+            <span class="nav-text">更多</span>
+          </a>
+        </li>
+      </ul>
+      
+      <button class="post-button" onclick="openPostModal()">发帖</button>
+      
+      <div class="user-profile" onclick="openProfileModal()">
+        <div class="avatar" id="navAvatar">Q</div>
         <div class="user-info">
-          <div class="current-user" id="currentNickname">未设置昵称</div>
-          <div class="current-user-id" id="currentUserId">用户 ID: 未生成</div>
+          <div class="user-name" id="navUserName">全智宇</div>
+          <div class="user-handle" id="navUserHandle">@quanzhiyu</div>
+        </div>
+        <div>⋯</div>
+      </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <!-- 顶部导航 -->
+      <div class="main-header">
+        <div class="header-title">首页</div>
+      </div>
+      
+      <!-- 发布框 -->
+      <div class="post-composer">
+        <div class="composer-container">
+          <div class="composer-avatar" id="composerAvatar">Q</div>
+          <div class="composer-content">
+            <textarea 
+              class="composer-textarea" 
+              id="composerTextarea" 
+              placeholder="有什么新鲜事？" 
+              maxlength="280"
+              oninput="updateCharCount()"
+            ></textarea>
+            <div class="composer-actions">
+              <div class="action-icons">
+                <div class="action-icon" title="媒体">📷</div>
+                <div class="action-icon" title="GIF">🎬</div>
+                <div class="action-icon" title="投票">📊</div>
+                <div class="action-icon" title="表情">😊</div>
+                <div class="action-icon" title="日程">📅</div>
+              </div>
+              <div>
+                <span id="charCountDisplay" style="color: var(--text-secondary); font-size: 14px; margin-right: 12px;">0/280</span>
+                <button class="post-button-sm" id="postButton" onclick="createPost()" disabled>发帖</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <textarea id="postContent" placeholder="分享你的想法..." maxlength="500"></textarea>
-      <div class="post-footer">
-        <span id="charCount">0/500</span>
-        <button class="button" onclick="publishPost()" id="publishBtn" disabled>发布</button>
+      
+      <!-- 帖子列表 -->
+      <div class="posts-container" id="postsContainer">
+        <!-- 帖子会动态加载到这里 -->
       </div>
     </div>
     
-    <!-- 帖子列表 -->
-    <div class="posts-container" id="postsContainer">
-      <div class="empty-state">
-        还没有帖子，成为第一个发布的人吧！
+    <!-- 右侧边栏 -->
+    <div class="right-sidebar">
+      <!-- 搜索框 -->
+      <div class="search-container">
+        <div class="search-box">
+          <div class="search-icon">🔍</div>
+          <input type="text" class="search-input" placeholder="搜索">
+        </div>
+      </div>
+      
+      <!-- 趋势模块 -->
+      <div class="trends">
+        <div class="trends-header">为你推荐</div>
+        <div class="trend-item">
+          <div class="trend-category">趋势 · 全智宇</div>
+          <div class="trend-name">#全智宇是瘤子</div>
+          <div class="trend-count">1.2万 帖子</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-category">编程 · 趋势中</div>
+          <div class="trend-name">前端开发</div>
+          <div class="trend-count">8,543 帖子</div>
+        </div>
+        <div class="trend-item">
+          <div class="trend-category">娱乐 · 趋势中</div>
+          <div class="trend-name">今日热点</div>
+          <div class="trend-count">5,432 帖子</div>
+        </div>
+        <a href="#" style="display: block; padding: 12px 16px; color: var(--primary); text-decoration: none;">显示更多</a>
+      </div>
+      
+      <!-- 谁关注模块 -->
+      <div class="who-to-follow">
+        <div class="who-to-follow-header">推荐关注</div>
+        <div class="follow-item">
+          <div class="follow-avatar">X</div>
+          <div class="follow-info">
+            <div class="follow-name">X官方</div>
+            <div class="follow-handle">@X</div>
+          </div>
+          <button class="follow-button">关注</button>
+        </div>
+        <div class="follow-item">
+          <div class="follow-avatar">D</div>
+          <div class="follow-info">
+            <div class="follow-name">设计达人</div>
+            <div class="follow-handle">@design_master</div>
+          </div>
+          <button class="follow-button">关注</button>
+        </div>
+        <a href="#" style="display: block; padding: 12px 16px; color: var(--primary); text-decoration: none;">显示更多</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 发帖模态框 -->
+  <div class="modal" id="postModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="close-button" onclick="closePostModal()">✕</div>
+        <div class="modal-title">发帖</div>
+        <div></div>
+      </div>
+      <div class="post-composer" style="border-bottom: none;">
+        <div class="composer-container">
+          <div class="composer-avatar" id="modalAvatar">Q</div>
+          <div class="composer-content">
+            <textarea 
+              class="composer-textarea" 
+              id="modalTextarea" 
+              placeholder="有什么新鲜事？" 
+              maxlength="280"
+              oninput="updateModalCharCount()"
+              style="font-size: 20px; min-height: 120px;"
+            ></textarea>
+            <div class="composer-actions">
+              <div class="action-icons">
+                <div class="action-icon" title="媒体">📷</div>
+                <div class="action-icon" title="GIF">🎬</div>
+                <div class="action-icon" title="投票">📊</div>
+                <div class="action-icon" title="表情">😊</div>
+                <div class="action-icon" title="日程">📅</div>
+              </div>
+              <div>
+                <span id="modalCharCountDisplay" style="color: var(--text-secondary); font-size: 14px; margin-right: 12px;">0/280</span>
+                <button class="post-button-sm" id="modalPostButton" onclick="createPostFromModal()" disabled>发帖</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 回复模态框 -->
+  <div class="modal" id="replyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="close-button" onclick="closeReplyModal()">✕</div>
+        <div class="modal-title">回复</div>
+        <div></div>
+      </div>
+      <div class="post-composer" style="border-bottom: none;">
+        <div class="composer-container">
+          <div class="composer-avatar" id="replyAvatar">Q</div>
+          <div class="composer-content">
+            <div style="margin-bottom: 12px; padding: 8px; background: var(--surface-light); border-radius: 8px;" id="replyToPost"></div>
+            <textarea 
+              class="composer-textarea" 
+              id="replyTextarea" 
+              placeholder="发布你的回复" 
+              maxlength="280"
+              oninput="updateReplyCharCount()"
+              style="font-size: 20px; min-height: 100px;"
+            ></textarea>
+            <div class="composer-actions">
+              <div class="action-icons">
+                <div class="action-icon" title="媒体">📷</div>
+                <div class="action-icon" title="表情">😊</div>
+              </div>
+              <div>
+                <span id="replyCharCountDisplay" style="color: var(--text-secondary); font-size: 14px; margin-right: 12px;">0/280</span>
+                <button class="post-button-sm" id="replyButton" onclick="postReply()" disabled>回复</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 个人资料模态框 -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="close-button" onclick="closeProfileModal()">✕</div>
+        <div class="modal-title">个人资料</div>
+        <div></div>
+      </div>
+      <div style="padding: 20px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div class="avatar" style="width: 80px; height: 80px; font-size: 24px; margin: 0 auto 12px;" id="profileAvatar">Q</div>
+          <div style="font-size: 20px; font-weight: 600; margin-bottom: 4px;" id="profileName">全智宇</div>
+          <div style="color: var(--text-secondary); margin-bottom: 20px;" id="profileHandle">@quanzhiyu</div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 8px;">设置昵称</h3>
+          <input 
+            type="text" 
+            id="nicknameInput" 
+            placeholder="输入昵称" 
+            style="width: 100%; padding: 12px; background: var(--surface-light); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);"
+          >
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 8px;">个人简介</h3>
+          <textarea 
+            id="bioInput" 
+            placeholder="介绍一下你自己..." 
+            style="width: 100%; padding: 12px; background: var(--surface-light); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); min-height: 80px;"
+          ></textarea>
+        </div>
+        
+        <button 
+          class="post-button-sm" 
+          onclick="saveProfile()"
+          style="width: 100%;"
+        >
+          保存更改
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    // 全局变量
+    // 全局数据
     let currentUser = {
-      id: null,
-      nickname: null
+      id: generateId(),
+      nickname: "全智宇",
+      handle: "quanzhiyu",
+      bio: "",
+      avatarChar: "Q"
     };
     
     let posts = [];
+    let currentReplyingTo = null;
     
-    // 页面加载
+    // 工具函数
+    function generateId() {
+      return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    function formatTime(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diff = now - date;
+      
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 1) return '刚刚';
+      if (minutes < 60) return `${minutes}分钟前`;
+      
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours}小时前`;
+      
+      const days = Math.floor(hours / 24);
+      if (days < 7) return `${days}天前`;
+      
+      return date.toLocaleDateString('zh-CN');
+    }
+    
+    // 初始化
     document.addEventListener('DOMContentLoaded', function() {
-      // 检查是否有已保存的昵称
-      const savedUser = localStorage.getItem('community_user');
+      // 加载用户数据
+      const savedUser = localStorage.getItem('q_user');
       if (savedUser) {
         try {
-          currentUser = JSON.parse(savedUser);
-          setupUserInterface();
+          const user = JSON.parse(savedUser);
+          currentUser = { ...currentUser, ...user };
         } catch (e) {
-          localStorage.removeItem('community_user');
+          console.error('加载用户数据失败:', e);
         }
       }
       
-      // 加载帖子
-      loadPosts();
-      
-      // 字符计数
-      const textarea = document.getElementById('postContent');
-      const charCount = document.getElementById('charCount');
-      const publishBtn = document.getElementById('publishBtn');
-      
-      textarea.addEventListener('input', function() {
-        const length = this.value.length;
-        charCount.textContent = length + '/500';
-        publishBtn.disabled = length === 0 || length > 500;
-      });
-      
-      // 生成随机用户ID
-      if (!currentUser.id) {
-        generateUserId();
+      // 加载帖子数据
+      const savedPosts = localStorage.getItem('q_posts');
+      if (savedPosts) {
+        try {
+          posts = JSON.parse(savedPosts);
+        } catch (e) {
+          console.error('加载帖子数据失败:', e);
+        }
+      } else {
+        // 创建示例帖子
+        createSamplePosts();
       }
+      
+      // 更新UI
+      updateUserUI();
+      renderPosts();
+      
+      // 设置头像字符
+      updateAvatarChars();
     });
     
-    // 生成用户ID
-    function generateUserId() {
-      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-      currentUser.id = 'user_' + randomNum;
+    // 创建示例帖子
+    function createSamplePosts() {
+      const samplePosts = [
+        {
+          id: generateId(),
+          userId: 'user_1',
+          nickname: '设计达人',
+          handle: 'design_master',
+          avatarChar: 'D',
+          content: '今天分享一个前端设计技巧：使用CSS Grid创建响应式布局真的很好用！#前端开发 #设计',
+          time: new Date(Date.now() - 1800000).toISOString(),
+          likes: 24,
+          retweets: 3,
+          replies: 2,
+          liked: false,
+          retweeted: false
+        },
+        {
+          id: generateId(),
+          userId: 'user_2',
+          nickname: '科技观察',
+          handle: 'tech_observer',
+          avatarChar: 'T',
+          content: '人工智能的发展速度令人惊叹，未来几年内我们将看到更多AI应用的落地。#人工智能 #科技',
+          time: new Date(Date.now() - 7200000).toISOString(),
+          likes: 56,
+          retweets: 12,
+          replies: 8,
+          liked: false,
+          retweeted: false
+        },
+        {
+          id: generateId(),
+          userId: currentUser.id,
+          nickname: currentUser.nickname,
+          handle: currentUser.handle,
+          avatarChar: currentUser.avatarChar,
+          content: '欢迎来到QuanSpace！这是一个类似X的社交平台，你可以在这里分享想法、参与讨论。',
+          time: new Date(Date.now() - 86400000).toISOString(),
+          likes: 18,
+          retweets: 5,
+          replies: 3,
+          liked: true,
+          retweeted: false
+        }
+      ];
+      
+      posts = samplePosts;
+      savePosts();
     }
     
-    // 保存昵称
-    function saveNickname() {
-      const nicknameInput = document.getElementById('nicknameInput');
-      const nickname = nicknameInput.value.trim();
-      const errorElement = document.getElementById('nicknameError');
-      const saveBtn = document.getElementById('saveNicknameBtn');
-      
-      // 重置错误
-      errorElement.style.display = 'none';
-      errorElement.textContent = '';
-      
-      // 验证昵称
-      if (nickname.length < 2) {
-        showError('昵称至少需要2个字符');
-        return;
-      }
-      
-      if (nickname.length > 20) {
-        showError('昵称不能超过20个字符');
-        return;
-      }
-      
-      // 保存用户信息
-      if (!currentUser.id) {
-        generateUserId();
-      }
-      
-      currentUser.nickname = nickname;
-      localStorage.setItem('community_user', JSON.stringify(currentUser));
-      
-      // 更新界面
-      setupUserInterface();
-      
-      // 清空输入框
-      nicknameInput.value = '';
-      
-      // 显示成功消息
-      alert('昵称设置成功！');
-      
-      function showError(message) {
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-        saveBtn.disabled = true;
-        setTimeout(() => {
-          saveBtn.disabled = false;
-        }, 1000);
-      }
+    // 更新用户界面
+    function updateUserUI() {
+      document.getElementById('navUserName').textContent = currentUser.nickname;
+      document.getElementById('navUserHandle').textContent = '@' + currentUser.handle;
+      document.getElementById('profileName').textContent = currentUser.nickname;
+      document.getElementById('profileHandle').textContent = '@' + currentUser.handle;
+      document.getElementById('nicknameInput').value = currentUser.nickname;
+      document.getElementById('bioInput').value = currentUser.bio || '';
     }
     
-    // 设置用户界面
-    function setupUserInterface() {
-      document.getElementById('postSection').style.display = 'block';
+    // 更新所有头像字符
+    function updateAvatarChars() {
+      const avatarChar = currentUser.avatarChar || currentUser.nickname.charAt(0) || 'Q';
       
-      // 更新用户信息显示
-      document.getElementById('currentNickname').textContent = currentUser.nickname;
-      document.getElementById('currentUserId').textContent = '用户ID: ' + currentUser.id;
-      
-      // 更新头像显示（取昵称前两个字符）
-      const avatarDisplay = document.getElementById('avatarDisplay');
-      if (currentUser.nickname.length >= 2) {
-        avatarDisplay.textContent = currentUser.nickname.substring(0, 2).toUpperCase();
-      } else {
-        avatarDisplay.textContent = '??';
-      }
+      document.getElementById('navAvatar').textContent = avatarChar;
+      document.getElementById('composerAvatar').textContent = avatarChar;
+      document.getElementById('modalAvatar').textContent = avatarChar;
+      document.getElementById('replyAvatar').textContent = avatarChar;
+      document.getElementById('profileAvatar').textContent = avatarChar;
     }
     
-    // 发布帖子
-    function publishPost() {
-      const content = document.getElementById('postContent').value.trim();
+    // 保存个人资料
+    function saveProfile() {
+      const nicknameInput = document.getElementById('nicknameInput').value.trim();
+      const bioInput = document.getElementById('bioInput').value.trim();
       
-      if (!content || !currentUser.nickname) {
-        alert('请先设置昵称并输入内容');
+      if (nicknameInput.length < 1) {
+        alert('昵称不能为空');
         return;
       }
       
-      if (content.length > 500) {
-        alert('内容不能超过500个字符');
+      if (nicknameInput.length > 20) {
+        alert('昵称不能超过20个字符');
         return;
       }
+      
+      currentUser.nickname = nicknameInput;
+      currentUser.bio = bioInput;
+      currentUser.avatarChar = nicknameInput.charAt(0).toUpperCase();
+      
+      // 更新当前用户的帖子
+      posts.forEach(post => {
+        if (post.userId === currentUser.id) {
+          post.nickname = currentUser.nickname;
+          post.avatarChar = currentUser.avatarChar;
+        }
+      });
+      
+      // 保存数据
+      localStorage.setItem('q_user', JSON.stringify(currentUser));
+      savePosts();
+      
+      // 更新UI
+      updateUserUI();
+      updateAvatarChars();
+      renderPosts();
+      
+      alert('个人资料已保存');
+      closeProfileModal();
+    }
+    
+    // 字符计数
+    function updateCharCount() {
+      const textarea = document.getElementById('composerTextarea');
+      const charCount = document.getElementById('charCountDisplay');
+      const button = document.getElementById('postButton');
+      
+      const length = textarea.value.length;
+      charCount.textContent = length + '/280';
+      button.disabled = length === 0 || length > 280;
+    }
+    
+    function updateModalCharCount() {
+      const textarea = document.getElementById('modalTextarea');
+      const charCount = document.getElementById('modalCharCountDisplay');
+      const button = document.getElementById('modalPostButton');
+      
+      const length = textarea.value.length;
+      charCount.textContent = length + '/280';
+      button.disabled = length === 0 || length > 280;
+    }
+    
+    function updateReplyCharCount() {
+      const textarea = document.getElementById('replyTextarea');
+      const charCount = document.getElementById('replyCharCountDisplay');
+      const button = document.getElementById('replyButton');
+      
+      const length = textarea.value.length;
+      charCount.textContent = length + '/280';
+      button.disabled = length === 0 || length > 280;
+    }
+    
+    // 发帖
+    function createPost() {
+      const textarea = document.getElementById('composerTextarea');
+      const content = textarea.value.trim();
+      
+      if (content.length === 0 || content.length > 280) return;
       
       const newPost = {
-        id: 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+        id: generateId(),
         userId: currentUser.id,
         nickname: currentUser.nickname,
+        handle: currentUser.handle,
+        avatarChar: currentUser.avatarChar,
         content: content,
         time: new Date().toISOString(),
         likes: 0,
-        liked: false
+        retweets: 0,
+        replies: 0,
+        liked: false,
+        retweeted: false
       };
       
-      // 添加到帖子列表
       posts.unshift(newPost);
+      textarea.value = '';
+      document.getElementById('charCountDisplay').textContent = '0/280';
+      document.getElementById('postButton').disabled = true;
       
-      // 保存到本地存储
       savePosts();
-      
-      // 清空输入框
-      document.getElementById('postContent').value = '';
-      document.getElementById('charCount').textContent = '0/500';
-      document.getElementById('publishBtn').disabled = true;
-      
-      // 重新渲染帖子
       renderPosts();
+    }
+    
+    function createPostFromModal() {
+      const textarea = document.getElementById('modalTextarea');
+      const content = textarea.value.trim();
       
-      // 显示成功消息
-      alert('发布成功！');
+      if (content.length === 0 || content.length > 280) return;
+      
+      const newPost = {
+        id: generateId(),
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        handle: currentUser.handle,
+        avatarChar: currentUser.avatarChar,
+        content: content,
+        time: new Date().toISOString(),
+        likes: 0,
+        retweets: 0,
+        replies: 0,
+        liked: false,
+        retweeted: false
+      };
+      
+      posts.unshift(newPost);
+      textarea.value = '';
+      document.getElementById('modalCharCountDisplay').textContent = '0/280';
+      document.getElementById('modalPostButton').disabled = true;
+      
+      savePosts();
+      renderPosts();
+      closePostModal();
     }
     
-    // 保存帖子到本地存储
-    function savePosts() {
-      try {
-        // 只保存最近100条帖子，防止本地存储过大
-        const postsToSave = posts.slice(0, 100);
-        localStorage.setItem('community_posts', JSON.stringify(postsToSave));
-      } catch (e) {
-        console.error('保存帖子失败:', e);
-      }
-    }
-    
-    // 从本地存储加载帖子
-    function loadPosts() {
-      try {
-        const savedPosts = localStorage.getItem('community_posts');
-        if (savedPosts) {
-          posts = JSON.parse(savedPosts);
-        }
-        renderPosts();
-      } catch (e) {
-        console.error('加载帖子失败:', e);
-        posts = [];
-      }
-    }
-    
-    // 渲染帖子列表
+    // 渲染帖子
     function renderPosts() {
       const container = document.getElementById('postsContainer');
       
       if (posts.length === 0) {
-        container.innerHTML = '<div class="empty-state">还没有帖子，成为第一个发布的人吧！</div>';
+        container.innerHTML = '<div style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">还没有帖子，发布第一条吧！</div>';
         return;
       }
       
@@ -486,27 +1194,35 @@
       
       posts.forEach(post => {
         const time = formatTime(post.time);
-        const avatarText = post.nickname.substring(0, 2).toUpperCase();
+        const isOwnPost = post.userId === currentUser.id;
         
         html += `
           <div class="post" id="post-${post.id}">
             <div class="post-header">
-              <div class="post-avatar">${avatarText}</div>
+              <div class="post-avatar">${post.avatarChar}</div>
               <div class="post-user-info">
-                <div class="post-username">${escapeHtml(post.nickname)}</div>
-                <div class="post-userid">${post.userId}</div>
+                <div class="post-user-name">
+                  ${escapeHtml(post.nickname)}
+                  <span class="post-user-handle">@${escapeHtml(post.handle)}</span>
+                  <span class="post-time">· ${time}</span>
+                </div>
               </div>
-              <div class="post-time">${time}</div>
+              ${isOwnPost ? '<div style="color: var(--text-secondary); cursor: pointer;" onclick="deletePost(\'' + post.id + '\')">⋯</div>' : ''}
             </div>
-            <div class="post-content">${escapeHtml(post.content)}</div>
+            <div class="post-content">${formatPostContent(post.content)}</div>
             <div class="post-actions">
-              <button class="post-action" onclick="toggleLike('${post.id}')">
-                <span>${post.liked ? '❤️' : '🤍'}</span>
+              <button class="action-button reply" onclick="openReplyModal('${post.id}')">
+                <div class="action-icon-small">💬</div>
+                <span>${post.replies}</span>
+              </button>
+              <button class="action-button retweet ${post.retweeted ? 'retweeted' : ''}" onclick="toggleRetweet('${post.id}')">
+                <div class="action-icon-small">🔄</div>
+                <span>${post.retweets}</span>
+              </button>
+              <button class="action-button like ${post.liked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+                <div class="action-icon-small">${post.liked ? '❤️' : '🤍'}</div>
                 <span>${post.likes}</span>
               </button>
-              ${post.userId === currentUser.id ? `
-                <button class="post-action" onclick="deletePost('${post.id}')">删除</button>
-              ` : ''}
             </div>
           </div>
         `;
@@ -515,7 +1231,30 @@
       container.innerHTML = html;
     }
     
-    // 点赞/取消点赞
+    // 格式化帖子内容
+    function formatPostContent(content) {
+      // 简单处理换行
+      let formatted = escapeHtml(content);
+      // 处理话题标签
+      formatted = formatted.replace(/#(\w+)/g, '<span style="color: var(--primary); cursor: pointer;">#$1</span>');
+      // 处理@提及
+      formatted = formatted.replace(/@(\w+)/g, '<span style="color: var(--primary); cursor: pointer;">@$1</span>');
+      // 处理换行
+      formatted = formatted.replace(/\n/g, '<br>');
+      return formatted;
+    }
+    
+    // 转义HTML
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    
+    // 点赞功能
     function toggleLike(postId) {
       const post = posts.find(p => p.id === postId);
       if (!post) return;
@@ -532,45 +1271,135 @@
       renderPosts();
     }
     
+    // 转发功能
+    function toggleRetweet(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      if (post.retweeted) {
+        post.retweets--;
+        post.retweeted = false;
+      } else {
+        post.retweets++;
+        post.retweeted = true;
+      }
+      
+      savePosts();
+      renderPosts();
+    }
+    
+    // 回复功能
+    function openReplyModal(postId) {
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+      
+      currentReplyingTo = post;
+      
+      const replyToElement = document.getElementById('replyToPost');
+      replyToElement.innerHTML = `
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(45deg, var(--primary), #7856ff); display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; margin-right: 8px;">
+            ${post.avatarChar}
+          </div>
+          <span style="font-weight: 600;">${escapeHtml(post.nickname)}</span>
+          <span style="color: var(--text-secondary); margin-left: 4px;">@${escapeHtml(post.handle)}</span>
+        </div>
+        <div>${escapeHtml(post.content)}</div>
+      `;
+      
+      document.getElementById('replyTextarea').value = '';
+      document.getElementById('replyCharCountDisplay').textContent = '0/280';
+      document.getElementById('replyButton').disabled = true;
+      
+      document.getElementById('replyModal').style.display = 'flex';
+    }
+    
+    function postReply() {
+      const textarea = document.getElementById('replyTextarea');
+      const content = textarea.value.trim();
+      
+      if (!currentReplyingTo || content.length === 0 || content.length > 280) return;
+      
+      // 增加原帖回复数
+      currentReplyingTo.replies = (currentReplyingTo.replies || 0) + 1;
+      
+      // 创建回复帖子
+      const replyPost = {
+        id: generateId(),
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        handle: currentUser.handle,
+        avatarChar: currentUser.avatarChar,
+        content: content,
+        time: new Date().toISOString(),
+        likes: 0,
+        retweets: 0,
+        replies: 0,
+        liked: false,
+        retweeted: false,
+        replyTo: currentReplyingTo.id
+      };
+      
+      posts.unshift(replyPost);
+      
+      savePosts();
+      renderPosts();
+      closeReplyModal();
+    }
+    
     // 删除帖子
     function deletePost(postId) {
-      if (!confirm('确定要删除这条帖子吗？')) {
-        return;
-      }
+      if (!confirm('确定要删除这条帖子吗？')) return;
       
       posts = posts.filter(post => post.id !== postId);
       savePosts();
       renderPosts();
     }
     
-    // 格式化时间
-    function formatTime(timeString) {
-      const time = new Date(timeString);
-      const now = new Date();
-      const diff = now - time;
-      
-      const minutes = Math.floor(diff / 60000);
-      if (minutes < 1) return '刚刚';
-      if (minutes < 60) return `${minutes}分钟前`;
-      
-      const hours = Math.floor(minutes / 60);
-      if (hours < 24) return `${hours}小时前`;
-      
-      const days = Math.floor(hours / 24);
-      if (days < 7) return `${days}天前`;
-      
-      return time.toLocaleDateString('zh-CN');
+    // 保存帖子
+    function savePosts() {
+      try {
+        // 只保存最近100条帖子
+        const postsToSave = posts.slice(0, 100);
+        localStorage.setItem('q_posts', JSON.stringify(postsToSave));
+      } catch (e) {
+        console.error('保存帖子失败:', e);
+      }
     }
     
-    // 转义HTML
-    function escapeHtml(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;')
-        .replace(/\n/g, '<br>');
+    // 模态框控制
+    function openPostModal() {
+      document.getElementById('postModal').style.display = 'flex';
+      document.getElementById('modalTextarea').focus();
+    }
+    
+    function closePostModal() {
+      document.getElementById('postModal').style.display = 'none';
+      document.getElementById('modalTextarea').value = '';
+      document.getElementById('modalCharCountDisplay').textContent = '0/280';
+      document.getElementById('modalPostButton').disabled = true;
+    }
+    
+    function closeReplyModal() {
+      document.getElementById('replyModal').style.display = 'none';
+      currentReplyingTo = null;
+    }
+    
+    function openProfileModal() {
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+    
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+    
+    // 点击模态框外部关闭
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        closePostModal();
+        closeReplyModal();
+        closeProfileModal();
+      }
     }
   </script>
 </body>
